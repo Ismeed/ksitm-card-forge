@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import KsitmLogo from "@/components/KsitmLogo";
+import IdCard from "@/components/IdCard";
 import { GraduationCap, Briefcase, Search, Shield } from "lucide-react";
 
 export default function Index() {
@@ -87,7 +88,5 @@ function PreviewCard() {
     programme_level: "HND" as const, student_type: "full_time" as const,
     reference_number: "KSITM-2025-00001",
   };
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const IdCard = require("@/components/IdCard").default;
   return <div style={{ transform: 'scale(0.85)', transformOrigin: 'center' }}><IdCard data={sample} /></div>;
 }
