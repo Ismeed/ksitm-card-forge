@@ -3,8 +3,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { NIGERIAN_STATES, getProgrammes, findProgramme, STAFF_UNITS } from "@/lib/programmes";
-import PhotoUpload from "./PhotoUpload";
-import SignaturePad from "./SignaturePad";
+import PhotoUpload from "@/components/PhotoUpload";
+import SignaturePad from "@/components/SignaturePad";
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
