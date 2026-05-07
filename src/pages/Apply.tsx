@@ -47,10 +47,7 @@ export default function ApplyPage() {
     if (!confirm) { toast.error("Please confirm the declaration"); return; }
     setSubmitting(true);
     try {
-      // Ensure clean public submission — sign out any admin session in this browser
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) await supabase.auth.signOut();
-
+      // publicSupabase is a separate anon client — no need to sign out
       let photo_url: string | null = null;
       let signature_url: string | null = null;
       if (draft.photo_data) photo_url = await uploadDataUrl("applicant-photos", "p", draft.photo_data);
