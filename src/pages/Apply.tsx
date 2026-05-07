@@ -7,7 +7,7 @@ import IdCard from "@/components/IdCard";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ArrowLeft, ArrowRight, Send } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { publicSupabase as supabase } from "@/lib/publicSupabase";
 import { toast } from "sonner";
 import KsitmLogo from "@/components/KsitmLogo";
 import { Link } from "react-router-dom";
@@ -47,10 +47,7 @@ export default function ApplyPage() {
     if (!confirm) { toast.error("Please confirm the declaration"); return; }
     setSubmitting(true);
     try {
-      // Ensure clean public submission — sign out any admin session in this browser
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) await supabase.auth.signOut();
-
+      // publicSupabase is a separate anon client — no need to sign out
       let photo_url: string | null = null;
       let signature_url: string | null = null;
       if (draft.photo_data) photo_url = await uploadDataUrl("applicant-photos", "p", draft.photo_data);
@@ -92,31 +89,31 @@ export default function ApplyPage() {
   return (
     <div className="min-h-screen pb-20">
       <header className="sticky top-0 z-30 bg-background/80 backdrop-blur-xl border-b border-border">
-        <div className="container flex items-center justify-between py-4">
-          <Link to="/" className="flex items-center gap-3">
-            <KsitmLogo size={36} />
-            <div>
-              <div className="font-display font-bold leading-tight">KSITM</div>
-              <div className="text-[10px] text-accent italic leading-tight">Beyond Know How</div>
+        <div className="container flex items-center justify-between py-3 sm:py-4 gap-3">
+          <Link to="/" className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <KsitmLogo size={32} />
+            <div className="min-w-0">
+              <div className="font-display font-bold leading-tight text-sm sm:text-base">KSITM</div>
+              <div className="text-[10px] text-accent italic leading-tight hidden sm:block">Beyond Know How</div>
             </div>
           </Link>
-          <div className="text-sm text-muted-foreground">
-            {isStaff ? "Staff" : "Student"} ID Application
+          <div className="text-xs sm:text-sm text-muted-foreground text-right shrink-0">
+            {isStaff ? "Staff" : "Student"} ID
           </div>
         </div>
       </header>
 
-      <div className="container max-w-5xl pt-8">
+      <div className="container max-w-5xl pt-6 sm:pt-8 px-3 sm:px-6">
         {/* Progress */}
-        <div className="mb-8">
+        <div className="mb-6 sm:mb-8">
           <div className="h-2 rounded-full bg-secondary overflow-hidden">
             <motion.div className="h-full bg-gradient-orange shadow-glow-orange"
               animate={{ width: `${(step / 4) * 100}%` }} transition={{ duration: 0.4 }} />
           </div>
-          <div className="grid grid-cols-4 mt-3 text-xs">
+          <div className="grid grid-cols-4 mt-3 text-[10px] sm:text-xs gap-1">
             {labels.map((l, i) => (
-              <div key={l} className={`text-center font-semibold ${i + 1 <= step ? "text-accent" : "text-muted-foreground"}`}>
-                {i + 1}. {l}
+              <div key={l} className={`text-center font-semibold truncate ${i + 1 <= step ? "text-accent" : "text-muted-foreground"}`}>
+                <span className="hidden sm:inline">{i + 1}. </span>{l}
               </div>
             ))}
           </div>
@@ -126,64 +123,64 @@ export default function ApplyPage() {
           <motion.div key={step}
             initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }}
             transition={{ duration: 0.3 }}
-            className="glass-panel rounded-2xl p-6 md:p-8">
-            <h2 className="font-display text-2xl mb-6">{labels[step - 1]}</h2>
+            className="glass-panel rounded-2xl p-4 sm:p-6 md:p-8">
+            <h2 className="font-display text-xl sm:text-2xl mb-4 sm:mb-6">{labels[step - 1]}</h2>
             {step === 1 && <StepPersonal />}
             {step === 2 && (isStaff ? <StepStaffEmployment /> : <StepStudentAcademic />)}
             {step === 3 && <StepEmergency />}
             {step === 4 && (
-              <div className="grid lg:grid-cols-2 gap-8">
-                <div className="space-y-3 text-sm">
+              <div className="grid lg:grid-cols-2 gap-6 lg:gap-8">
+                <div className="space-y-3 text-sm order-2 lg:order-1">
                   <div className="glass-panel rounded-lg p-4">
                     <div className="text-accent font-semibold uppercase tracking-wider text-xs mb-2">Personal</div>
-                    <div>{draft.first_name} {draft.middle_name} {draft.last_name}</div>
-                    <div className="text-muted-foreground">{draft.email} · {draft.phone}</div>
-                    <div className="text-muted-foreground">{draft.gender} · {draft.state_of_origin} · {draft.date_of_birth}</div>
+                    <div className="break-words">{draft.first_name} {draft.middle_name} {draft.last_name}</div>
+                    <div className="text-muted-foreground break-words">{draft.email} · {draft.phone}</div>
+                    <div className="text-muted-foreground break-words">{draft.gender} · {draft.state_of_origin} · {draft.date_of_birth}</div>
                   </div>
                   <div className="glass-panel rounded-lg p-4">
                     <div className="text-accent font-semibold uppercase tracking-wider text-xs mb-2">{isStaff ? "Employment" : "Academic"}</div>
                     {isStaff ? (
                       <>
-                        <div>{draft.designation} · {draft.department}</div>
-                        <div className="text-muted-foreground">Staff ID: {draft.staff_id} · {draft.employment_type}</div>
-                        <div className="text-muted-foreground">Unit: {draft.unit} · Appointed: {draft.appointment_date}</div>
+                        <div className="break-words">{draft.designation} · {draft.department}</div>
+                        <div className="text-muted-foreground break-words">Staff ID: {draft.staff_id} · {draft.employment_type}</div>
+                        <div className="text-muted-foreground break-words">Unit: {draft.unit} · Appointed: {draft.appointment_date}</div>
                       </>
                     ) : (
                       <>
-                        <div>{draft.programme}</div>
-                        <div className="text-muted-foreground">{draft.college}</div>
-                        <div className="text-muted-foreground">Matric: {draft.matric_number} · {draft.current_level} · {draft.session}</div>
+                        <div className="break-words">{draft.programme}</div>
+                        <div className="text-muted-foreground break-words">{draft.college}</div>
+                        <div className="text-muted-foreground break-words">Matric: {draft.matric_number} · {draft.current_level} · {draft.session}</div>
                       </>
                     )}
                   </div>
                   <div className="glass-panel rounded-lg p-4">
                     <div className="text-accent font-semibold uppercase tracking-wider text-xs mb-2">Emergency Contact</div>
-                    <div>{draft.emergency_contact_name} ({draft.emergency_contact_relationship})</div>
-                    <div className="text-muted-foreground">{draft.emergency_contact_phone}</div>
+                    <div className="break-words">{draft.emergency_contact_name} ({draft.emergency_contact_relationship})</div>
+                    <div className="text-muted-foreground break-words">{draft.emergency_contact_phone}</div>
                   </div>
                   <label className="flex items-start gap-2 mt-4 cursor-pointer">
                     <Checkbox checked={confirm} onCheckedChange={(v) => setConfirm(!!v)} />
                     <span className="text-sm">I confirm all information provided is accurate and complete.</span>
                   </label>
                 </div>
-                <div className="flex flex-col items-center gap-4">
+                <div className="flex flex-col items-center gap-4 order-1 lg:order-2 overflow-hidden">
                   <div className="text-xs uppercase tracking-widest text-muted-foreground">Live Preview</div>
-                  <div style={{ transform: 'scale(0.85)' }}><IdCard data={{ ...draft } as any} /></div>
+                  <div className="origin-top scale-[0.6] sm:scale-75 lg:scale-90"><IdCard data={{ ...draft } as any} /></div>
                 </div>
               </div>
             )}
 
-            <div className="flex justify-between mt-8">
-              <Button variant="outline" onClick={prev} disabled={step === 1}>
+            <div className="flex flex-col-reverse sm:flex-row justify-between gap-3 mt-6 sm:mt-8">
+              <Button variant="outline" onClick={prev} disabled={step === 1} className="w-full sm:w-auto">
                 <ArrowLeft className="w-4 h-4 mr-2" /> Back
               </Button>
               {step < 4 ? (
-                <Button onClick={next} className="bg-gradient-orange hover:opacity-90">
+                <Button onClick={next} className="bg-gradient-orange hover:opacity-90 w-full sm:w-auto">
                   Continue <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               ) : (
                 <Button onClick={submit} disabled={submitting || !confirm}
-                  className="bg-gradient-orange hover:opacity-90 pulse-orange">
+                  className="bg-gradient-orange hover:opacity-90 pulse-orange w-full sm:w-auto">
                   <Send className="w-4 h-4 mr-2" /> {submitting ? "Submitting..." : "Submit Application"}
                 </Button>
               )}
