@@ -158,6 +158,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      bootstrap_first_admin: { Args: never; Returns: boolean }
       check_application_status: {
         Args: { _ref: string }
         Returns: {

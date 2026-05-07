@@ -21,19 +21,34 @@ export default function AdminLogin() {
     setLoading(true);
     try {
       if (mode === "signup") {
-        const { data, error } = await supabase.auth.signUp({
+        const { error: signUpError } = await supabase.auth.signUp({
           email, password, options: { emailRedirectTo: `${window.location.origin}/admin` },
         });
-        if (error) throw error;
-        if (data.user) {
-          // Self-assign security_unit role for first admin (production would gate this)
-          await supabase.from("user_roles").insert({ user_id: data.user.id, role: "security_unit" });
+        if (signUpError) throw signUpError;
+        // Auto sign in (auto-confirm is enabled)
+        const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+        if (signInError) throw signInError;
+        // Try to claim Security Unit role (only succeeds if no admin exists yet)
+        const { data: claimed } = await supabase.rpc("bootstrap_first_admin");
+        if (claimed) {
+          toast.success("Welcome — you are the Security Unit administrator.");
+          navigate("/admin");
+        } else {
+          await supabase.auth.signOut();
+          toast.error("An administrator already exists. Contact them for access.");
+          setMode("signin");
         }
-        toast.success("Account created. You can sign in.");
-        setMode("signin");
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
+        // Verify role
+        const { data: { user } } = await supabase.auth.getUser();
+        const { data: role } = await supabase.from("user_roles")
+          .select("role").eq("user_id", user!.id).eq("role", "security_unit").maybeSingle();
+        if (!role) {
+          await supabase.auth.signOut();
+          throw new Error("This account is not authorized for the Security Unit.");
+        }
         navigate("/admin");
       }
     } catch (e: any) { toast.error(e.message); }
