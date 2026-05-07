@@ -89,31 +89,31 @@ export default function ApplyPage() {
   return (
     <div className="min-h-screen pb-20">
       <header className="sticky top-0 z-30 bg-background/80 backdrop-blur-xl border-b border-border">
-        <div className="container flex items-center justify-between py-4">
-          <Link to="/" className="flex items-center gap-3">
-            <KsitmLogo size={36} />
-            <div>
-              <div className="font-display font-bold leading-tight">KSITM</div>
-              <div className="text-[10px] text-accent italic leading-tight">Beyond Know How</div>
+        <div className="container flex items-center justify-between py-3 sm:py-4 gap-3">
+          <Link to="/" className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <KsitmLogo size={32} />
+            <div className="min-w-0">
+              <div className="font-display font-bold leading-tight text-sm sm:text-base">KSITM</div>
+              <div className="text-[10px] text-accent italic leading-tight hidden sm:block">Beyond Know How</div>
             </div>
           </Link>
-          <div className="text-sm text-muted-foreground">
-            {isStaff ? "Staff" : "Student"} ID Application
+          <div className="text-xs sm:text-sm text-muted-foreground text-right shrink-0">
+            {isStaff ? "Staff" : "Student"} ID
           </div>
         </div>
       </header>
 
-      <div className="container max-w-5xl pt-8">
+      <div className="container max-w-5xl pt-6 sm:pt-8 px-3 sm:px-6">
         {/* Progress */}
-        <div className="mb-8">
+        <div className="mb-6 sm:mb-8">
           <div className="h-2 rounded-full bg-secondary overflow-hidden">
             <motion.div className="h-full bg-gradient-orange shadow-glow-orange"
               animate={{ width: `${(step / 4) * 100}%` }} transition={{ duration: 0.4 }} />
           </div>
-          <div className="grid grid-cols-4 mt-3 text-xs">
+          <div className="grid grid-cols-4 mt-3 text-[10px] sm:text-xs gap-1">
             {labels.map((l, i) => (
-              <div key={l} className={`text-center font-semibold ${i + 1 <= step ? "text-accent" : "text-muted-foreground"}`}>
-                {i + 1}. {l}
+              <div key={l} className={`text-center font-semibold truncate ${i + 1 <= step ? "text-accent" : "text-muted-foreground"}`}>
+                <span className="hidden sm:inline">{i + 1}. </span>{l}
               </div>
             ))}
           </div>
