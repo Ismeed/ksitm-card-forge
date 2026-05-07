@@ -179,6 +179,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      submit_application: { Args: { payload: Json }; Returns: string }
     }
     Enums: {
       app_role: "security_unit"

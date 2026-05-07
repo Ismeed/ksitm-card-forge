@@ -76,10 +76,10 @@ export default function ApplyPage() {
         });
       }
 
-      const { data, error } = await supabase.from("applications").insert(payload).select("reference_number").single();
+      const { data, error } = await supabase.rpc("submit_application", { payload });
       if (error) throw error;
       reset(type!);
-      navigate(`/success/${data.reference_number}`);
+      navigate(`/success/${data}`);
     } catch (e: any) {
       console.error(e);
       toast.error(e.message || "Submission failed");
