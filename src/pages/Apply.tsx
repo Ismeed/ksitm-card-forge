@@ -170,17 +170,17 @@ export default function ApplyPage() {
               </div>
             )}
 
-            <div className="flex justify-between mt-8">
-              <Button variant="outline" onClick={prev} disabled={step === 1}>
+            <div className="flex flex-col-reverse sm:flex-row justify-between gap-3 mt-6 sm:mt-8">
+              <Button variant="outline" onClick={prev} disabled={step === 1} className="w-full sm:w-auto">
                 <ArrowLeft className="w-4 h-4 mr-2" /> Back
               </Button>
               {step < 4 ? (
-                <Button onClick={next} className="bg-gradient-orange hover:opacity-90">
+                <Button onClick={next} className="bg-gradient-orange hover:opacity-90 w-full sm:w-auto">
                   Continue <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               ) : (
                 <Button onClick={submit} disabled={submitting || !confirm}
-                  className="bg-gradient-orange hover:opacity-90 pulse-orange">
+                  className="bg-gradient-orange hover:opacity-90 pulse-orange w-full sm:w-auto">
                   <Send className="w-4 h-4 mr-2" /> {submitting ? "Submitting..." : "Submit Application"}
                 </Button>
               )}
