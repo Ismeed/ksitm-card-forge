@@ -7,7 +7,7 @@ import IdCard from "@/components/IdCard";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ArrowLeft, ArrowRight, Send } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { publicSupabase as supabase } from "@/lib/publicSupabase";
 import { toast } from "sonner";
 import KsitmLogo from "@/components/KsitmLogo";
 import { Link } from "react-router-dom";
