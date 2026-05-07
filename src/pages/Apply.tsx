@@ -123,49 +123,49 @@ export default function ApplyPage() {
           <motion.div key={step}
             initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }}
             transition={{ duration: 0.3 }}
-            className="glass-panel rounded-2xl p-6 md:p-8">
-            <h2 className="font-display text-2xl mb-6">{labels[step - 1]}</h2>
+            className="glass-panel rounded-2xl p-4 sm:p-6 md:p-8">
+            <h2 className="font-display text-xl sm:text-2xl mb-4 sm:mb-6">{labels[step - 1]}</h2>
             {step === 1 && <StepPersonal />}
             {step === 2 && (isStaff ? <StepStaffEmployment /> : <StepStudentAcademic />)}
             {step === 3 && <StepEmergency />}
             {step === 4 && (
-              <div className="grid lg:grid-cols-2 gap-8">
-                <div className="space-y-3 text-sm">
+              <div className="grid lg:grid-cols-2 gap-6 lg:gap-8">
+                <div className="space-y-3 text-sm order-2 lg:order-1">
                   <div className="glass-panel rounded-lg p-4">
                     <div className="text-accent font-semibold uppercase tracking-wider text-xs mb-2">Personal</div>
-                    <div>{draft.first_name} {draft.middle_name} {draft.last_name}</div>
-                    <div className="text-muted-foreground">{draft.email} · {draft.phone}</div>
-                    <div className="text-muted-foreground">{draft.gender} · {draft.state_of_origin} · {draft.date_of_birth}</div>
+                    <div className="break-words">{draft.first_name} {draft.middle_name} {draft.last_name}</div>
+                    <div className="text-muted-foreground break-words">{draft.email} · {draft.phone}</div>
+                    <div className="text-muted-foreground break-words">{draft.gender} · {draft.state_of_origin} · {draft.date_of_birth}</div>
                   </div>
                   <div className="glass-panel rounded-lg p-4">
                     <div className="text-accent font-semibold uppercase tracking-wider text-xs mb-2">{isStaff ? "Employment" : "Academic"}</div>
                     {isStaff ? (
                       <>
-                        <div>{draft.designation} · {draft.department}</div>
-                        <div className="text-muted-foreground">Staff ID: {draft.staff_id} · {draft.employment_type}</div>
-                        <div className="text-muted-foreground">Unit: {draft.unit} · Appointed: {draft.appointment_date}</div>
+                        <div className="break-words">{draft.designation} · {draft.department}</div>
+                        <div className="text-muted-foreground break-words">Staff ID: {draft.staff_id} · {draft.employment_type}</div>
+                        <div className="text-muted-foreground break-words">Unit: {draft.unit} · Appointed: {draft.appointment_date}</div>
                       </>
                     ) : (
                       <>
-                        <div>{draft.programme}</div>
-                        <div className="text-muted-foreground">{draft.college}</div>
-                        <div className="text-muted-foreground">Matric: {draft.matric_number} · {draft.current_level} · {draft.session}</div>
+                        <div className="break-words">{draft.programme}</div>
+                        <div className="text-muted-foreground break-words">{draft.college}</div>
+                        <div className="text-muted-foreground break-words">Matric: {draft.matric_number} · {draft.current_level} · {draft.session}</div>
                       </>
                     )}
                   </div>
                   <div className="glass-panel rounded-lg p-4">
                     <div className="text-accent font-semibold uppercase tracking-wider text-xs mb-2">Emergency Contact</div>
-                    <div>{draft.emergency_contact_name} ({draft.emergency_contact_relationship})</div>
-                    <div className="text-muted-foreground">{draft.emergency_contact_phone}</div>
+                    <div className="break-words">{draft.emergency_contact_name} ({draft.emergency_contact_relationship})</div>
+                    <div className="text-muted-foreground break-words">{draft.emergency_contact_phone}</div>
                   </div>
                   <label className="flex items-start gap-2 mt-4 cursor-pointer">
                     <Checkbox checked={confirm} onCheckedChange={(v) => setConfirm(!!v)} />
                     <span className="text-sm">I confirm all information provided is accurate and complete.</span>
                   </label>
                 </div>
-                <div className="flex flex-col items-center gap-4">
+                <div className="flex flex-col items-center gap-4 order-1 lg:order-2 overflow-hidden">
                   <div className="text-xs uppercase tracking-widest text-muted-foreground">Live Preview</div>
-                  <div style={{ transform: 'scale(0.85)' }}><IdCard data={{ ...draft } as any} /></div>
+                  <div className="origin-top scale-[0.6] sm:scale-75 lg:scale-90"><IdCard data={{ ...draft } as any} /></div>
                 </div>
               </div>
             )}
